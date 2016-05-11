@@ -178,7 +178,7 @@ var Board = function(width, height, mines) {
 			for (var j = 0; j < this.height; j++) {
 				if (this.board[i][j].realState == states.MINE) {
 					this.board[i][j].reveal();
-					var startLabel = game.add.text(80, 40, 'You looser');
+					var startLabel = game.add.text(630, 300, 'Game over');
 				}
 			}
 		}
@@ -186,7 +186,7 @@ var Board = function(width, height, mines) {
 
 
 	this.win = function() {
-		var startLabel = game.add.text(80, 40, 'You won');
+		var startLabel = game.add.text(630, 300, 'You won');
 	}
 
 	// Change the state of the mouse cursor (to discover tiles)

@@ -48,6 +48,8 @@ var gameState = {
 		var rKey = game.input.keyboard.addKey(Phaser.Keyboard.R);
 		rKey.onDown.add(startState.start, startState);
 
+		game.add.text(200, 560, "Switch between reveal and place flag");
+
 	},
 
 
