@@ -6,7 +6,7 @@ var parameters = {
 	width: 200,
 	tile_height: 36,
 	tile_width: 36,
-	mines: 10,
+	mines: 2,
 	sprites: "assets/tiles_sprites.png"
 };
 
@@ -42,7 +42,7 @@ var gameState = {
 
 	create: function() {
 		game.add.sprite(0,0,'sky');
-		var board = new Board(10, 10);
+		var board = new Board(10, 10, parameters.mines);
 		board.group.x = 170;
 		board.group.y = 120;
 	},
@@ -50,6 +50,24 @@ var gameState = {
 	update: function() {
 	}
 
+}
+
+
+var endState = {
+	create: function() {
+		game.add.sprite(0,0,'sky');
+		game.add.text(80, 80, 'Hello, welcome to the minesweeper.');
+		var startLabel = game.add.text(80, 150, 'Press S to start');
+
+		var sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+
+		sKey.onDown.addOnce(this.start, this);
+
+	},
+
+	start: function() {
+		game.state.start('game');
+	}
 }
 
 game.state.add("start", startState);

@@ -15,7 +15,7 @@ var states = {
 	FLAG2: 10,
 	HIDDEN: 11,
 	FLAG: 12,
-	BOMB: 15
+	MINE: 15
 }
 
 
@@ -30,15 +30,16 @@ var Tile = function(x,y, status, group, board) {
 
 	this.click = function() {
 		this.board.clickOnTile(this.x, this.y);
-		//this.sprite.frame = this.realState;
-		if (this.realState == states.BOMB) {
-			console.log("Game Over");
-		}
 	}
 
 	this.reveal = function() {
-		this.sprite.frame = this.realState;
-		this.currentState = this.realState;
+		if (this.currentState == states.HIDDEN){
+			this.board.uncovered -=1;
+			this.sprite.frame = this.realState;
+			this.currentState = this.realState;
+		}
+
+
 	}
 
 
@@ -52,7 +53,7 @@ var Tile = function(x,y, status, group, board) {
 
 
 
-var Board = function(width, height) {
+var Board = function(width, height, mines) {
 
 
 	// *** METHODS ***
@@ -90,7 +91,7 @@ var Board = function(width, height) {
 		for (var i = 0; i < n; i++) {
 			var random = Math.floor((Math.random() * list_tiles.length));
 			var tile = list_tiles.splice(random, 1);
-			tile[0].realState = states.BOMB;
+			tile[0].realState = states.MINE;
 		}
 	}
 
@@ -99,7 +100,7 @@ var Board = function(width, height) {
 		for (var i = 0; i < this.width; i++) {
 			for (var j = 0; j < this.height; j++) {
 				// If there is a bomb, we increase every numbers around (except for the bombs)
-				if (this.board[i][j].realState == states.BOMB) {
+				if (this.board[i][j].realState == states.MINE) {
 					list_surroundings = this.getSurroundings(i, j);
 					for (elt of list_surroundings) {
 						if (elt.realState < 8) {
@@ -140,15 +141,47 @@ var Board = function(width, height) {
 
 			else {
 				console.log("you lost");
+				this.loose();
 			}
 		}
+		if (this.uncovered == this.mines) {
+			console.log("you win");
+			this.win();
+		}
+
 	};
+
+
+	this.loose = function() {
+		for (var i = 0; i < this.width; i++) {
+			for (var j = 0; j < this.height; j++) {
+				if (this.board[i][j].realState == states.MINE) {
+					this.board[i][j].reveal();
+					var startLabel = game.add.text(80, 30, 'You looser');
+					var startLabel = game.add.text(80, 60, 'Press S to restart');
+					var sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+					sKey.onDown.addOnce(startState.start, startState);
+				}
+			}
+		}
+	}
+
+
+	this.win = function() {
+		var startLabel = game.add.text(80, 30, 'You won');
+		var startLabel = game.add.text(80, 60, 'Press S to restart');
+		var sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+		sKey.onDown.addOnce(startState.start, startState);
+
+	}
 
 
 	// *** Creation of the board ***
 
   this.width = width;
   this.height = height;
+	this.mines = mines;
+	this.uncovered = width * height; // number of hidden tiles
 
 	// Group to which all tiles belong
 	var group = game.add.group();
@@ -169,7 +202,7 @@ var Board = function(width, height) {
 
 
 	// Set the bombs
-	this.setRandomBombs(10);
+	this.setRandomBombs(mines);
 
 	// TODO : Calculate numbers behind each tile
 	this.calculateNumbers();
