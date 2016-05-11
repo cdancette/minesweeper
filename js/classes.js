@@ -31,9 +31,9 @@ var Tile = function(x,y, status, group, board) {
 	this.reveal = function() {
 		if (this.currentState == states.HIDDEN){
 			this.board.uncovered -=1;
+		}
 			this.sprite.frame = this.realState;
 			this.currentState = this.realState;
-		}
 	}
 
 
@@ -155,7 +155,6 @@ var Board = function(width, height, mines) {
 				}
 
 				else {
-					console.log("you lost");
 					this.loose();
 				}
 			}
