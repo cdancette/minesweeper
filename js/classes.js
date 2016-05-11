@@ -155,12 +155,15 @@ var Board = function(width, height, mines) {
 				}
 
 				else {
-					this.loose();
+					if (!this.won) {
+						this.loose();
+					}
 				}
 			}
 			if (this.uncovered == this.mines) {
 				console.log("you win");
 				if (!this.lost) {
+					this.won = true;
 					this.win();
 				}
 			}
@@ -175,9 +178,6 @@ var Board = function(width, height, mines) {
 				if (this.board[i][j].realState == states.MINE) {
 					this.board[i][j].reveal();
 					var startLabel = game.add.text(80, 30, 'You looser');
-					var startLabel = game.add.text(80, 60, 'Press S to restart');
-					var sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
-					sKey.onDown.addOnce(startState.start, startState);
 				}
 			}
 		}
@@ -186,10 +186,6 @@ var Board = function(width, height, mines) {
 
 	this.win = function() {
 		var startLabel = game.add.text(80, 30, 'You won');
-		var startLabel = game.add.text(80, 60, 'Press S to restart');
-		var sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
-		sKey.onDown.addOnce(startState.start, startState);
-
 	}
 
 

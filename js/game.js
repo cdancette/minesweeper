@@ -43,6 +43,11 @@ var gameState = {
 		var board = new Board(10, 10, parameters.mines);
 		board.group.x = 220;
 		board.group.y = 120;
+
+		var startLabel = game.add.text(80, 60, 'Press R to restart');
+		var rKey = game.input.keyboard.addKey(Phaser.Keyboard.R);
+		rKey.onDown.add(startState.start, startState);
+
 	},
 
 
