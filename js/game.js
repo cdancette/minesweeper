@@ -41,7 +41,7 @@ var gameState = {
 	create: function() {
 		game.add.sprite(0,0,'sky');
 		var board = new Board(10, 10, parameters.mines);
-		board.group.x = 170;
+		board.group.x = 220;
 		board.group.y = 120;
 	},
 

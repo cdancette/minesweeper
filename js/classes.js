@@ -238,8 +238,8 @@ var Board = function(width, height, mines) {
 	// TODO : Calculate numbers behind each tile
 	this.calculateNumbers();
 
-	this.hidden = game.add.sprite(group.x + 10 * parameters.tile_width / 2, group.y + 10 * parameters.tile_height + 30, 'tiles', states.SELECTED_HIDDEN, group);
-	this.flag = game.add.sprite(group.x + 10 * parameters.tile_width / 2 + 36, group.y + 10 * parameters.tile_height + 30, 'tiles', states.FLAG, group);
+	this.hidden = game.add.sprite(group.x + 4 * parameters.tile_width, group.y + 10 * parameters.tile_height + 30, 'tiles', states.SELECTED_HIDDEN, group);
+	this.flag = game.add.sprite(group.x + 5 * parameters.tile_width , group.y + 10 * parameters.tile_height + 30, 'tiles', states.FLAG, group);
 
 	this.hidden.inputEnabled = true;
 	this.hidden.input.useHandCursor = true;
