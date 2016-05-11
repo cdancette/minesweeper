@@ -22,7 +22,6 @@ var states = {
 // Tile Class
 var Tile = function(x,y, status, group, board) {
 
-
 	//  **** METHODS *****
 	this.click = function() {
 		this.board.clickOnTile(this.x, this.y);
@@ -55,14 +54,12 @@ var Tile = function(x,y, status, group, board) {
 }
 
 
-
+// Board class, contains all the tiles and other parameters
 var Board = function(width, height, mines) {
-
 
 	// *** METHODS ***
 
 	// Method to get the tiles that surrounds an other tile
-
 	this.getSurroundings = function(i,j) {
 		var list = [[i+1, j], [i-1, j], [i+1, j+1], [i-1,j+1], [i, j+1], [i, j-1], [i+1, j-1], [i-1, j-1]];
 		var valid_list = [];
@@ -192,13 +189,15 @@ var Board = function(width, height, mines) {
 		var startLabel = game.add.text(80, 40, 'You won');
 	}
 
-
+	// Change the state of the mouse cursor (to discover tiles)
 	this.unsetFlagging = function() {
 		this.flag.frame = states.FLAG;
 		this.hidden.frame = states.SELECTED_HIDDEN;
 		this.flagging = false;
 	}
 
+
+	// Change the state of the mouse cursor (to put flags)
 	this.setFlagging = function() {
 		this.flag.frame = states.SELECTED_FLAG;
 		this.hidden.frame = states.HIDDEN;
@@ -241,6 +240,8 @@ var Board = function(width, height, mines) {
 	this.hidden = game.add.sprite(group.x + 4 * parameters.tile_width, group.y + 10 * parameters.tile_height + 30, 'tiles', states.SELECTED_HIDDEN, group);
 	this.flag = game.add.sprite(group.x + 5 * parameters.tile_width , group.y + 10 * parameters.tile_height + 30, 'tiles', states.FLAG, group);
 
+
+	// Place the two cursors under the board
 	this.hidden.inputEnabled = true;
 	this.hidden.input.useHandCursor = true;
 	this.hidden.events.onInputDown.add(this.unsetFlagging, this);
@@ -250,7 +251,7 @@ var Board = function(width, height, mines) {
 	this.flag.events.onInputDown.add(this.setFlagging, this);
 
 
-
+	// Place the counter
 	this.counter = parameters.mines;
 	this.textCounter = game.add.text(80, 300, String(this.counter));
 
