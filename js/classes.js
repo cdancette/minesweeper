@@ -1,4 +1,25 @@
 
+
+// Tiles states
+var states = {
+	EMPTY: 0,
+	ONE: 1,
+	TWO: 2,
+	THREE: 3,
+	FOUR: 4,
+	FIVE: 5,
+	SIX: 6,
+	SEVEN: 7,
+	EIGHT: 8,
+	FLAG: 9,
+	FLAG2: 10,
+	HIDDEN: 11,
+	FLAG: 12,
+	BOMB: 15
+}
+
+
+// Tile Class
 var Tile = function(x,y, status, group, board) {
 
 	this.x = x;
