@@ -252,7 +252,7 @@ var Board = function(width, height, mines) {
 
 
 	this.counter = parameters.mines;
-	this.textCounter = game.add.text(80, 10, String(this.counter));
+	this.textCounter = game.add.text(80, 300, String(this.counter));
 
 
 
