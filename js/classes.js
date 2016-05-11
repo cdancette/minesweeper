@@ -120,11 +120,15 @@ var Board = function(width, height, mines) {
 		var tiles = [this.board[i][j]];
 
 		if (this.flagging && tiles[0].currentState == states.HIDDEN) {
+			this.counter -=1;
+			this.textCounter.text = String(this.counter);
 			tiles[0].currentState = states.FLAG;
 			tiles[0].sprite.frame = states.FLAG;
 		}
 
 		else if (this.flagging && tiles[0].currentState == states.FLAG) {
+			this.counter +=1;
+			this.textCounter.text = String(this.counter);
 			tiles[0].currentState = states.HIDDEN;
 			tiles[0].sprite.frame = states.HIDDEN;
 		}
@@ -244,6 +248,12 @@ var Board = function(width, height, mines) {
 	this.flag.inputEnabled = true;
 	this.flag.input.useHandCursor = true;
 	this.flag.events.onInputDown.add(this.setFlagging, this);
+
+
+
+	this.counter = parameters.mines;
+	this.textCounter = game.add.text(80, 10, String(this.counter));
+
 
 
 	this.group = group;
