@@ -6,7 +6,7 @@ var parameters = {
 	width: 200,
 	tile_height: 36,
 	tile_width: 36,
-	mines: 2,
+	mines: 10,
 	sprites: "assets/tiles_sprites.png"
 };
 
@@ -22,6 +22,7 @@ var startState = {
 		game.load.image('star', 'assets/star.png');
 		game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 	},
+
 	create: function() {
 		game.add.sprite(0,0,'sky');
 		game.add.text(80, 80, 'Hello, welcome to the minesweeper.');
@@ -46,6 +47,8 @@ var gameState = {
 		board.group.x = 170;
 		board.group.y = 120;
 	},
+
+
 
 	update: function() {
 	}

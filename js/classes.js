@@ -12,9 +12,9 @@ var states = {
 	SEVEN: 7,
 	EIGHT: 8,
 	FLAG: 9,
-	FLAG2: 10,
+	SELECTED_FLAG: 10,
 	HIDDEN: 11,
-	FLAG: 12,
+	SELECTED_HIDDEN: 12,
 	MINE: 15
 }
 
@@ -22,12 +22,8 @@ var states = {
 // Tile Class
 var Tile = function(x,y, status, group, board) {
 
-	this.x = x;
-	this.y = y;
-	this.currentState = states.HIDDEN;
-	this.realState = states.EMPTY;
-	this.board = board;
 
+	//  **** METHODS *****
 	this.click = function() {
 		this.board.clickOnTile(this.x, this.y);
 	}
@@ -38,9 +34,15 @@ var Tile = function(x,y, status, group, board) {
 			this.sprite.frame = this.realState;
 			this.currentState = this.realState;
 		}
-
-
 	}
+
+
+	// *** CONSTRUCTOR ***
+	this.x = x;
+	this.y = y;
+	this.currentState = states.HIDDEN;
+	this.realState = states.EMPTY;
+	this.board = board;
 
 
 	var sprite = game.add.sprite(x * parameters.tile_width, y * parameters.tile_height, 'tiles', states.HIDDEN, group);
@@ -49,6 +51,7 @@ var Tile = function(x,y, status, group, board) {
 	this.sprite.inputEnabled = true;
 	this.sprite.input.useHandCursor = true;
 	this.sprite.events.onInputDown.add(this.click, this);
+
 }
 
 
@@ -116,43 +119,58 @@ var Board = function(width, height, mines) {
 	this.clickOnTile = function (i,j) {
 		var tiles = [this.board[i][j]];
 
-		while (tiles.length > 0) {
-			var tile = tiles.pop();
+		if (this.flagging && tiles[0].currentState == states.HIDDEN) {
+			tiles[0].currentState = states.FLAG;
+			tiles[0].sprite.frame = states.FLAG;
+		}
 
-			if (tile.realState == states.EMPTY){
-				tile.reveal();
-				var surroundings = this.getSurroundings(tile.x, tile.y);
-				var hiddens = []
-				// we get surroundings that are hidden
-				for (t of surroundings) {
-					if (t.currentState == states.HIDDEN) {
-						hiddens.push(t);
+		else if (this.flagging && tiles[0].currentState == states.FLAG) {
+			tiles[0].currentState = states.HIDDEN;
+			tiles[0].sprite.frame = states.HIDDEN;
+		}
+
+		else if (this.flagging == false) {
+
+			while (tiles.length > 0) {
+				var tile = tiles.pop();
+
+				if (tile.realState == states.EMPTY){
+					tile.reveal();
+					var surroundings = this.getSurroundings(tile.x, tile.y);
+					var hiddens = []
+					// we get surroundings that are hidden
+					for (t of surroundings) {
+						if (t.currentState == states.HIDDEN) {
+							hiddens.push(t);
+						}
 					}
+					for (t of hiddens) {
+						t.reveal();
+					}
+					tiles = tiles.concat(hiddens);
 				}
-				for (t of hiddens) {
-					t.reveal();
+
+				else if (tile.realState <= states.EIGHT) {
+					tile.reveal();
 				}
-				tiles = tiles.concat(hiddens);
-			}
 
-			else if (tile.realState <= states.EIGHT) {
-				tile.reveal();
+				else {
+					console.log("you lost");
+					this.loose();
+				}
 			}
-
-			else {
-				console.log("you lost");
-				this.loose();
+			if (this.uncovered == this.mines) {
+				console.log("you win");
+				if (!this.lost) {
+					this.win();
+				}
 			}
 		}
-		if (this.uncovered == this.mines) {
-			console.log("you win");
-			this.win();
-		}
-
-	};
+	}
 
 
 	this.loose = function() {
+		this.lost = true;
 		for (var i = 0; i < this.width; i++) {
 			for (var j = 0; j < this.height; j++) {
 				if (this.board[i][j].realState == states.MINE) {
@@ -176,12 +194,26 @@ var Board = function(width, height, mines) {
 	}
 
 
-	// *** Creation of the board ***
+	this.unsetFlagging = function() {
+		this.flag.frame = states.FLAG;
+		this.hidden.frame = states.SELECTED_HIDDEN;
+		this.flagging = false;
+	}
+
+	this.setFlagging = function() {
+		this.flag.frame = states.SELECTED_FLAG;
+		this.hidden.frame = states.HIDDEN;
+		this.flagging = true;
+	}
+
+
+	// *** Constructor ***
 
   this.width = width;
   this.height = height;
 	this.mines = mines;
 	this.uncovered = width * height; // number of hidden tiles
+	this.flagging = false; // to see if we're flagging or not
 
 	// Group to which all tiles belong
 	var group = game.add.group();
@@ -207,8 +239,17 @@ var Board = function(width, height, mines) {
 	// TODO : Calculate numbers behind each tile
 	this.calculateNumbers();
 
+	this.hidden = game.add.sprite(group.x + 10 * parameters.tile_width / 2, group.y + 10 * parameters.tile_height + 30, 'tiles', states.SELECTED_HIDDEN, group);
+	this.flag = game.add.sprite(group.x + 10 * parameters.tile_width / 2 + 36, group.y + 10 * parameters.tile_height + 30, 'tiles', states.FLAG, group);
+
+	this.hidden.inputEnabled = true;
+	this.hidden.input.useHandCursor = true;
+	this.hidden.events.onInputDown.add(this.unsetFlagging, this);
+
+	this.flag.inputEnabled = true;
+	this.flag.input.useHandCursor = true;
+	this.flag.events.onInputDown.add(this.setFlagging, this);
+
 
 	this.group = group;
-
-
 }
