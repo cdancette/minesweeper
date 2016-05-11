@@ -129,7 +129,7 @@ var Board = function(width, height, mines) {
 			tiles[0].sprite.frame = states.HIDDEN;
 		}
 
-		else if (this.flagging == false) {
+		else if (this.flagging == false && tiles[0].currentState == states.HIDDEN) {
 
 			while (tiles.length > 0) {
 				var tile = tiles.pop();
